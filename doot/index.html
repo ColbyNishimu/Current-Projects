@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Doot Doot</title>
+	<meta charset="utf-8"/>
+	<link href='https://fonts.googleapis.com/css?family=Lato:400,300,100,700,900' rel='stylesheet' type='text/css'>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="index.css" type="text/css"></head>
+<h1>Click to Doot</h1>
+<body>
+<div>
+<img src="doot1.jpg" id="dooter" onclick="changeImage()"/>
+<audio src="skullsound2.mp3" id="doot"/>
+<script language="javascript">
+	
+	function changeImage() {
+	var image = document.getElementById("dooter").src.substr(document.getElementById("dooter").src.lastIndexOf("/"));
+	var audio = document.getElementById("doot");
+        if (image == "/doot1.jpg") 
+        {
+        	document.getElementById("dooter").src = "localhost/doot/doot2.jpg";
+		audio.play();
+        }
+        else 
+        {
+        	document.getElementById("dooter").src = "localhost/doot/doot1.jpg";
+		audio.play();
+        }
+    }
+</script>
+</div>
+</body>
+</html>
