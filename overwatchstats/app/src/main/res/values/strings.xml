@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">overwatchstats</string>
+    <string name="header"> Welcome to OverwatchStats!</string>
+    <string name="preview">Please enter full BattleNet ID</string>
+    <string name="button">Submit</string>
+    <string name="us">us</string>
+    <string name="eu">eu</string>
+    <string name="kr">kr</string>
+    <string name="cn">cn</string>
+    <string name="global">global</string>
+    <string name="region">Please select your region</string>
+</resources>
