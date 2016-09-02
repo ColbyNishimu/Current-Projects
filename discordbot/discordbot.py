@@ -7,13 +7,17 @@ import discord
 import time
 import asyncio
 import sys
+import botobj
 from discord import opus
 
 #Create various dictionaries and main client
-client = discord.Client()
+client = botobj.bot()
+client.client = discord.Client()
+client.state = 0
 channeldict = {}
 memberdict = {}
 serverdict = {}
+
 
 #List of possible opus libraries
 OPUS_LIBS = ['libopus-0.x86.dll', 'libopus-0.x64.dll', 'libopus-0.dll', 'libopus.so.0', 'libopus.0.dylib']
@@ -46,10 +50,9 @@ class Player:
         self.currentChannel = channel
 
 #Listens for commands
-@client.event
+@client.client.event
 async def on_message(message):
-    used = 0
-    if message.author == client.user:     #Make sure the message sender isn't the client itself
+    if message.author == client.client.user:     #Make sure the message sender isn't the client itself
         return
     author = message.author         #get the User for the message sender
     load_opus_lib()
@@ -57,7 +60,7 @@ async def on_message(message):
     #Basic command
     if message.content.startswith('!hello'):
         msg = "%s How are you?" % author
-        await client.send_message(message.channel, msg)
+        await client.client.send_message(message.channel, msg)
     #------------------------------------------------------------------------------------------------------------------------
     #Disabled until I can figure out how to make the bot not break if recieving a command in a channel it is cuurently in
     #elif message.content.startswith("!voice"):
@@ -68,10 +71,10 @@ async def on_message(message):
     #        await client.join_voice_channel(user_channel)
     #------------------------------------------------------------------------------------------------------------------------
     #Plays doot noise
-    elif(message.content.startswith("!meme") and used == 0):
-        used = 1
+    elif(message.content.startswith("!meme") and client.state == 0):
+        client.setState(1)
         try:
-            voice = await client.join_voice_channel(author.voice_channel)
+            voice = await client.client.join_voice_channel(author.voice_channel)
             player = voice.create_ffmpeg_player("./audio/meme.mp3")
             player.volume = 0.5
             player.start()
@@ -82,15 +85,15 @@ async def on_message(message):
                     break
         except Exception:
             pass
-        await client.delete_message(message)
-        used = 0
+        await client.client.delete_message(message)
+        client.setState(0)
     #----------------------------------------------------------------------------------------------------------------------
     #Moves Matt
-    elif(message.content.startswith("!imissthegoodtimes") and used == 0):
-        used = 1
+    elif(message.content.startswith("!imissthegoodtimes") and client.state == 0):
+        client.setState(1)
         if(memberdict["Mattchew"].status.online == "online"):
             try:
-                voice = await client.join_voice_channel(author.voice_channel)
+                voice = await client.client.join_voice_channel(author.voice_channel)
                 player = voice.create_ffmpeg_player("./audio/lekick.wav")
                 player.volume = 0.5
                 player.start()
@@ -99,11 +102,11 @@ async def on_message(message):
                         await voice.disconnect()
                         print("client disconnected")
                         break
-                await client.move_member(memberdict["Mattchew"], channeldict["Matt's Corner"])
+                await client.client.move_member(memberdict["Mattchew"], channeldict["Matt's Corner"])
             except Exception:
                 traceback.print_exc()
-        await client.delete_message(message)
-        used = 0
+        await client.client.delete_message(message)
+        client.setState(0)
     #-----------------------------------------------------------------------------------------------------------------------
     #Kill the bot
     elif message.content.startswith("!kill"):
@@ -118,23 +121,23 @@ async def on_message(message):
     #        #await client.send_message()
 
 #At startup
-@client.event
+@client.client.event
 async def on_ready():
     print('Logged in as')
-    print(client.user.name)
-    print(client.user.id)
+    print(client.client.user.name)
+    print(client.client.user.id)
     print('------')
     print("Servers:")
-    for i in client.servers:
+    for i in client.client.servers:
         print(i.name, i.id)
         serverdict[i.name] = i
     print("Channels:")
-    channels = client.get_all_channels()
+    channels = client.client.get_all_channels()
     for i in channels:
         print(i.name, i.id, i.type)
         channeldict[i.name] = i
     #print(channeldict)
-    members = client.get_all_members()
+    members = client.client.get_all_members()
     for i in members:
         print(i.name, i.id)
         memberdict[i.name] = i
@@ -142,6 +145,6 @@ async def on_ready():
     print(serverdict)
             
 #Uses "token" to log bot into the correct server
-client.run("MjIwMzQzMzcxNDkzOTMzMDU3.Cqe64A.GKJ63ESBuP6QTmQyOSYy9KpfV78")
+client.client.run("MjIwMzQzMzcxNDkzOTMzMDU3.Cqe64A.GKJ63ESBuP6QTmQyOSYy9KpfV78")
 
 

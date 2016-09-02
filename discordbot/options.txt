@@ -1,0 +1,4 @@
+MemeLord by Colby Nishimura
+textmeme=1
+audiomeme=1
+kickmatt=1
